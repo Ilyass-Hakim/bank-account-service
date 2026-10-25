@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "bank-account-service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081/api" },
+    { "key": "compteId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Lister les comptes",
+      "request": { "method": "GET", "url": "{{baseUrl}}/comptes" }
+    },
+    {
+      "name": "2. Créer un compte",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('compteId', pm.response.json().id);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/comptes",
+        "body": { "mode": "raw", "raw": "{\n  \"solde\": 25000,\n  \"devise\": \"MAD\",\n  \"type\": \"COURANT\"\n}" }
+      }
+    },
+    {
+      "name": "3. Consulter le compte créé",
+      "request": { "method": "GET", "url": "{{baseUrl}}/comptes/{{compteId}}" }
+    },
+    {
+      "name": "4. Modifier le compte",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/comptes/{{compteId}}",
+        "body": { "mode": "raw", "raw": "{\n  \"solde\": 40000,\n  \"type\": \"EPARGNE\"\n}" }
+      }
+    },
+    {
+      "name": "5. Supprimer le compte",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/comptes/{{compteId}}" }
+    }
+  ]
+}
